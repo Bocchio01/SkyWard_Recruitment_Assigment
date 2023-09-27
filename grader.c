@@ -21,28 +21,28 @@ state_t state = STATE_INIT;
 int cur_ts;
 
 int liftoff_ts = 0;
-int apogee_ts  = 0;
-int landed_ts  = 0;
+int apogee_ts = 0;
+int landed_ts = 0;
 
 void liftoff()
 {
     assert(state == STATE_INIT);
     liftoff_ts = cur_ts;
-    state      = STATE_FLIGHT;
+    state = STATE_FLIGHT;
 }
 
 void apogee()
 {
     assert(state == STATE_FLIGHT);
     apogee_ts = cur_ts;
-    state     = STATE_DESCENT;
+    state = STATE_DESCENT;
 }
 
 void landed()
 {
     assert(state == STATE_DESCENT);
     landed_ts = cur_ts;
-    state     = STATE_LANDED;
+    state = STATE_LANDED;
 }
 
 int main()
