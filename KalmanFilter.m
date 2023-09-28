@@ -4,6 +4,8 @@ close all
 
 %% Section 0
 
+acc_treeshold_liftoff = 1;
+acc_treeshold_landing = 1;
 
 % Constants
 P0 = 101325;       % Standard atmospheric pressure at sea level (Pa)
@@ -15,11 +17,14 @@ R = 8.31446;       % Universal gas constant (J/(mol·K))
 
 % Calculate altitude
 altitude = @(pressure) (T0 / L) * (1 - (pressure / P0).^((R * L) / (g * M)));
+altitudeV2 = @(pressure) - (R * T0)/(g * M) * log(pressure / P0);
+
 acceleration = @(x, y, z) sqrt(x .* x + y .* y + z .* z);
 
 data = readtable('sim.csv', 'NumHeaderLines', 1);
 
 alt = altitude(data.Var8);
+altV2 = altitudeV2(data.Var8);
 accel = acceleration(data.Var2, data.Var3, data.Var4);
 
 %% Section 1: compute Kalman matrixes
@@ -48,6 +53,7 @@ estimate(:,1) = [alt(1); 0; accel(1)];
 for i = 2:length(t)
     estimate(:,i) = A*estimate(:,i-1);
     estimate(:,i) = estimate(:,i) + K*([alt(i); accel(i)] - H *estimate(:,i));
+
 end
 
 %% Section 2: plots
@@ -57,19 +63,37 @@ hold on
 title('Altitude')
 plot(data.Var1, estimate(1,:))
 plot(data.Var1, alt, 'r')
+% plot(data.Var1, altV2, 'g')
 hold off
 
-nexttile
-title('Velocity')
-plot(data.Var1, estimate(2,:))
+% nexttile
+% title('Velocity')
+% plot(data.Var1, estimate(2,:))
+% 
+% nexttile
+% hold on
+% title('Acceleration')
+% plot(data.Var1, estimate(3,:))
+% plot(data.Var1, accel, 'r')
+% legend('Filtered', 'Raw')
+% 
+% nexttile
+% hold on
+% title('Altitude diff')
+% plot(data.Var1(2:end), diff(estimate(1, :)))
+% 
+% nexttile
+% hold on
+% title('Acceleration diff')
+% plot(data.Var1(2:end), diff(estimate(3, :)))
 
-nexttile
-hold on
-title('Acceleration')
-plot(data.Var1, estimate(3,:))
-plot(data.Var1, accel, 'r')
-legend('Filtered', 'Raw')
+%% Inverse of matrix
 
+A = [1 2 3;
+     4 5 6;
+     7 8 100];
+
+inv(A)
 
 
 
