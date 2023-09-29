@@ -13,7 +13,7 @@ double computeAccMagnitude(double acc_x, double acc_y, double acc_z);
 /**
  * Computes the altitude based on the given barometric pressure.
  *
- * @param baro The barometric pressure in hPa.
+ * @param baro The barometric pressure in Pa.
  * @return The altitude in meters.
  */
 double computeAltitude(double baro);

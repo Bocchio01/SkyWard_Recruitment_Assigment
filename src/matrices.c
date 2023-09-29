@@ -1,3 +1,10 @@
+/**
+ * @file matrices.c
+ * @brief Matrix operations module
+ * @details This module implements the basic matrix operations.
+ * @date 2023-09-29
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>

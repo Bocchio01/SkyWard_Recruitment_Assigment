@@ -1,3 +1,10 @@
+/**
+ * @file state_updater.c
+ * @brief State updater module
+ * @details This module implements the Kalman filter algorithm and performs the event detection.
+ * @date 2023-09-29
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -13,17 +20,17 @@
 #define P0 101325    // Standard atmospheric pressure at sea level (Pa)
 #define L -0.0065    // Temperature lapse rate (K/m)
 #define T0 288.15    // Standard temperature at sea level (K)
-#define g 9.80665    // Acceleration due to gravity (m/s²)
+#define g 9.80665    // Acceleration due to gravity (m/s^2)
 #define M 0.0289644  // Molar mass of Earth's air (kg/mol)
 #define RGAS 8.31446 // Universal gas constant (J/(mol·K))
 
 #define dT 0.02 // 50 Hz, supposed knwon from sensor datasheet
 
-#define THRESHOLD_ACC_LIFTOFF 0.5 // Threshold for liftoff detection
-#define THRESHOLD_ACC_LANDING 15  // Threshold for apogee detection
+#define THRESHOLD_ACC_LIFTOFF 0.5 // Threshold for liftoff detection (m/s^2)
+#define THRESHOLD_ACC_LANDING 15  // Threshold for apogee detection (m/s^2)
 
-#define VARIANCE_BARO 2 * 14.6 // Variance of the barometer
-#define VARIANCE_ACC 2 * 15.7  // Variance of the accelerometer
+#define VARIANCE_BARO 2 * 14.6 // Variance of the barometer supposed knwon from sensor datasheet
+#define VARIANCE_ACC 2 * 15.7  // Variance of the accelerometer supposed knwon from sensor datasheet
 
 typedef enum
 {
@@ -41,8 +48,8 @@ typedef enum
     ACCELERATION
 } axis_t;
 
-state_t current_state;
-Matrix estimated_previous; // State vector
+state_t current_state;     // Current state of flight
+Matrix estimated_previous; // Estimated state vector at previous time step
 Matrix A;                  // State transition matrix
 Matrix K;                  // Kalman gain matrix
 Matrix H;                  // State to measurement map matrix
@@ -102,7 +109,7 @@ void init()
 void update(float acc_x, float acc_y, float acc_z, float gyro_x, float gyro_y, float gyro_z, float baro)
 {
 
-    Matrix estimated_current = matInit(3, 1); // Current state estimate vector
+    Matrix estimated_current = matInit(3, 1); // Estimated state vector at current time step
     Matrix measurement = matInit(2, 1);       // Measurement vector
     measurement.data[0][0] = computeAltitude(baro);
     measurement.data[1][0] = computeAccMagnitude(acc_x, acc_y, acc_z);
@@ -169,7 +176,6 @@ void update(float acc_x, float acc_y, float acc_z, float gyro_x, float gyro_y, f
 #endif
 }
 
-// TODO: check if the units are correct
 double computeAltitude(double baro)
 {
     // From the combination of the ideal gas law and the state equation for steady heavy fluids
