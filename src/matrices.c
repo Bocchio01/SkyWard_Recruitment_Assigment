@@ -111,12 +111,17 @@ Matrix matInverse(Matrix A)
     assert(A.rows == A.cols);
 
     double temp;
+    Matrix Pivoting = matComputePivot(A);
 
     Matrix I = matInit(A.rows, A.cols);
     for (int i = 0; i < A.rows; i++)
     {
         I.data[i][i] = 1;
     }
+
+    I = matMultiply(Pivoting, I);
+    A = matMultiply(Pivoting, A);
+    matFree(Pivoting);
 
     for (int k = 0; k < A.rows; k++)
     {
@@ -144,15 +149,66 @@ Matrix matInverse(Matrix A)
     return I;
 }
 
+Matrix matComputePivot(Matrix A)
+{
+
+    assert(A.rows == A.cols);
+
+    int maxRow;
+    double maxVal;
+
+    Matrix P = matInit(A.rows, A.cols);
+    for (int i = 0; i < A.rows; i++)
+    {
+        P.data[i][i] = 1;
+    }
+
+    for (int i = 0; i < A.rows; i++)
+    {
+        maxRow = i;
+        maxVal = A.data[i][i];
+        for (int j = i + 1; j < A.rows; j++)
+        {
+            if (A.data[j][i] > maxVal)
+            {
+                maxVal = A.data[j][i];
+                maxRow = j;
+            }
+        }
+
+        // Swap the current row with the row containing the maximum value
+        if (maxRow != i)
+        {
+            double *temp = P.data[i];
+            P.data[i] = P.data[maxRow];
+            P.data[maxRow] = temp;
+        }
+    }
+
+    return P;
+}
+
+void matFree(Matrix A)
+{
+    for (int i = 0; i < A.rows; i++)
+    {
+        free(A.data[i]);
+    }
+    free(A.data);
+}
+
 void matPrint(Matrix A)
 {
     printf("Matrix %dx%d:\n", A.rows, A.cols);
+    printf("[\n");
     for (int i = 0; i < A.rows; i++)
     {
+        printf("\t");
         for (int j = 0; j < A.cols; j++)
         {
-            printf("%.4f ", A.data[i][j]);
+            printf("%.1f ", A.data[i][j]);
         }
         printf("\n");
     }
+    printf("]\n");
 }

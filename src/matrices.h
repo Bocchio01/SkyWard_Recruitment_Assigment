@@ -60,6 +60,21 @@ Matrix matMultiply(Matrix A, Matrix B);
 Matrix matInverse(Matrix A);
 
 /**
+ * Calculates the pivot matrix of a given matrix using Gauss-Jordan elimination method.
+ *
+ * @param A The matrix to calculate the pivot matrix of.
+ * @return The pivot matrix of the given matrix.
+ */
+Matrix matComputePivot(Matrix A);
+
+/**
+ * Frees the memory allocated for the given matrix.
+ *
+ * @param A The matrix to be freed.
+ */
+void matFree(Matrix A);
+
+/**
  * Prints the given matrix A.
  *
  * @param A The matrix to be printed.
