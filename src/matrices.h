@@ -68,6 +68,32 @@ Matrix matInverse(Matrix A);
 Matrix matComputePivot(Matrix A);
 
 /**
+ * Calculates the determinant of a given matrix using Gauss-Jordan elimination method.
+ *
+ * @param A The matrix to calculate the determinant of.
+ * @return The determinant of the given matrix.
+ */
+double matComputeDeterminant(Matrix A);
+
+/**
+ * Calculates the adjugate of a given matrix using Gauss-Jordan elimination method.
+ *
+ * @param A The matrix to calculate the adjugate of.
+ * @return The adjugate of the given matrix.
+ */
+Matrix matComputeAdjugate(Matrix A);
+
+/**
+ * Calculates the minor of a given matrix using Gauss-Jordan elimination method.
+ *
+ * @param A The matrix to calculate the minor of.
+ * @param row The row around which the minor is calculated.
+ * @param col The column around which the minor is calculated.
+ * @return The minor of the given matrix.
+ */
+Matrix matComputeMinor(Matrix A, int row, int col);
+
+/**
  * Frees the memory allocated for the given matrix.
  *
  * @param A The matrix to be freed.

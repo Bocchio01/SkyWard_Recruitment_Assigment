@@ -109,6 +109,7 @@ Matrix matMultiply(Matrix A, Matrix B)
 Matrix matInverse(Matrix A)
 {
     assert(A.rows == A.cols);
+    assert(matComputeDeterminant(A) != 0);
 
     double temp;
     Matrix Pivoting = matComputePivot(A);
@@ -186,6 +187,69 @@ Matrix matComputePivot(Matrix A)
     }
 
     return P;
+}
+
+double matComputeDeterminant(Matrix A)
+{
+    assert(A.rows == A.cols);
+
+    if (A.rows == 1)
+        return A.data[0][0];
+
+    if (A.rows == 2)
+        return A.data[0][0] * A.data[1][1] - A.data[0][1] * A.data[1][0];
+
+    double det = 0.0;
+    for (int j = 0; j < A.rows; j++)
+    {
+        Matrix minor = matComputeMinor(A, 0, j);
+        double sign = (j % 2 == 0) ? 1.0 : -1.0;
+        det += sign * A.data[0][j] * matComputeDeterminant(minor);
+        matFree(minor);
+    }
+
+    return det;
+}
+
+Matrix matComputeAdjugate(Matrix A)
+{
+    assert(A.rows == A.cols);
+
+    Matrix adj = matInit(A.rows, A.cols);
+
+    for (int i = 0; i < A.rows; i++)
+    {
+        for (int j = 0; j < A.cols; j++)
+        {
+            Matrix minor = matComputeMinor(A, i, j);
+            double sign = ((i + j) % 2 == 0) ? 1.0 : -1.0;
+            adj.data[j][i] = sign * matComputeDeterminant(minor);
+            matFree(minor);
+        }
+    }
+    return adj;
+}
+
+Matrix matComputeMinor(Matrix A, int row, int col)
+{
+    Matrix minor = matInit(A.rows - 1, A.cols - 1);
+
+    int r = 0;
+    for (int i = 0; i < A.rows; i++)
+    {
+        if (i == row)
+            continue;
+        int c = 0;
+        for (int j = 0; j < A.cols; j++)
+        {
+            if (j == col)
+                continue;
+            minor.data[r][c] = A.data[i][j];
+            c++;
+        }
+        r++;
+    }
+    return minor;
 }
 
 void matFree(Matrix A)
