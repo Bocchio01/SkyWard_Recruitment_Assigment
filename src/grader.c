@@ -47,7 +47,7 @@ void landed()
 
 int main()
 {
-    FILE *f = fopen("sim.csv", "r");
+    FILE *f = fopen("../sim.csv", "r");
 
     fscanf(f, "%*s,%*s,%*s,%*s,%*s,%*s,%*s,%*s");
 
